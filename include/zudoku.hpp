@@ -7,11 +7,12 @@ namespace Zudoku
     {
     public:
         using This = SudokuSolver &;
+        using Self = SudokuSolver;
 
-        using CellLinearIndex = unsigned short int;
+        using CellLinearIndex = unsigned int;
         using CellIndex = std::pair<CellLinearIndex, CellLinearIndex>;
 
-        using CellValue = unsigned short int;
+        using CellValue = unsigned int;
 
         /**
          * A sudoku table. For the value of each cell, number in the range of 1 to 9
@@ -23,6 +24,10 @@ namespace Zudoku
         SudokuSolver();
         SudokuSolver(Table);
         SudokuSolver(Table &&);
+
+        This setTable(Table);
+        This setTable(Table &&);
+        Table getTable() const;
 
         This fill(size_t, size_t, CellValue);
         This clear(size_t, size_t, CellValue);
@@ -95,6 +100,8 @@ namespace Zudoku
         struct {
             NumberAvailabilityArray rows, columns, squares;
         } numberAvailability;
+
+        static void validateTable(const Table &);
 
     private:
         Table table;
