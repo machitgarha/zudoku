@@ -22,6 +22,7 @@ namespace Zudoku
 
         SudokuSolver();
         SudokuSolver(Table);
+        SudokuSolver(Table &&);
 
         This fill(size_t, size_t, CellValue);
         This clear(size_t, size_t, CellValue);
