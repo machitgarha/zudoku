@@ -21,16 +21,18 @@ SudokuSolver::SudokuSolver(Table &&table):
 
 SudokuSolver::This SudokuSolver::setTable(Table table)
 {
-    this->table = table;
     this->validateTable(table);
+
+    this->table = table;
 
     return *this;
 }
 
 SudokuSolver::This SudokuSolver::setTable(Table &&table)
 {
-    this->table = std::move(table);
     this->validateTable(table);
+
+    this->table = std::move(table);
 
     return *this;
 }
