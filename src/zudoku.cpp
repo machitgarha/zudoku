@@ -43,6 +43,25 @@ SudokuSolver::Table SudokuSolver::getTable() const
     return this->table;
 }
 
+SudokuSolver::This SudokuSolver::fill(size_t row, size_t column, CellValue value)
+{
+    this->validateCellIndex({row, column});
+    this->validateCellValue(value);
+
+    this->table[row][column] = value;
+
+    return *this;
+}
+
+SudokuSolver::This SudokuSolver::clear(size_t row, size_t column)
+{
+    this->validateCellIndex({row, column});
+
+    this->table[row][column] = 0;
+
+    return *this;
+}
+
 void SudokuSolver::validateCellValue(const CellValue &value)
 {
     if (value > 9) {
