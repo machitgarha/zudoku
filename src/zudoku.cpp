@@ -19,6 +19,15 @@ SudokuSolver::SudokuSolver(Table &&table):
     this->validateTable(table);
 }
 
+SudokuSolver::This SudokuSolver::solve()
+{
+    this->setEmptyCellsAndValueExistence();
+    this->setEmptyCellsPossibilities();
+    this->tryEmptyCellsPossibilities();
+
+    return *this;
+}
+
 SudokuSolver::This SudokuSolver::setTable(Table table)
 {
     this->validateTable(table);

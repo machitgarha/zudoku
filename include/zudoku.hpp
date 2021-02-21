@@ -26,14 +26,14 @@ namespace Zudoku
         SudokuSolver(Table);
         SudokuSolver(Table &&);
 
+        This solve();
+
         This setTable(Table);
         This setTable(Table &&);
         Table getTable() const;
 
         This fill(size_t, size_t, CellValue);
         This clear(size_t, size_t);
-
-        This solve();
 
     protected:
         /*
@@ -108,6 +108,8 @@ namespace Zudoku
         static void validateTable(const Table &);
 
         This setEmptyCellsAndValueExistence();
+        This makeValueExist(const CellIndex &, const CellValue &);
+
         This setEmptyCellsPossibilities();
         This tryEmptyCellsPossibilities();
 
