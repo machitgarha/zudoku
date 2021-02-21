@@ -30,7 +30,7 @@ namespace Zudoku
         Table getTable() const;
 
         This fill(size_t, size_t, CellValue);
-        This clear(size_t, size_t, CellValue);
+        This clear(size_t, size_t);
 
     protected:
         /*
@@ -101,6 +101,8 @@ namespace Zudoku
             NumberAvailabilityArray rows, columns, squares;
         } numberAvailability;
 
+        static void validateCellValue(const CellValue &);
+        static void validateCellIndex(const CellIndex &);
         static void validateTable(const Table &);
 
     private:
