@@ -105,7 +105,6 @@ namespace Zudoku
 
         static void validateCellValue(const CellValue &);
         static void validateCellIndex(const CellIndex &);
-        static void validateTable(const Table &);
 
         This setEmptyCellsAndValueExistence();
         This makeValueExist(const CellIndex &, const CellValue &);

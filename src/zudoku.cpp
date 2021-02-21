@@ -10,13 +10,11 @@ using namespace Zudoku;
 SudokuSolver::SudokuSolver(Table table):
     table(table)
 {
-    this->validateTable(table);
 }
 
 SudokuSolver::SudokuSolver(Table &&table):
     table(std::move(table))
 {
-    this->validateTable(table);
 }
 
 SudokuSolver::This SudokuSolver::solve()
@@ -30,8 +28,6 @@ SudokuSolver::This SudokuSolver::solve()
 
 SudokuSolver::This SudokuSolver::setTable(Table table)
 {
-    this->validateTable(table);
-
     this->table = table;
 
     return *this;
@@ -39,8 +35,6 @@ SudokuSolver::This SudokuSolver::setTable(Table table)
 
 SudokuSolver::This SudokuSolver::setTable(Table &&table)
 {
-    this->validateTable(table);
-
     this->table = std::move(table);
 
     return *this;
@@ -89,20 +83,5 @@ void SudokuSolver::validateCellIndex(const CellIndex &index)
             invalidFirstIndex ? "row" : "column",
             invalidFirstIndex ? index.first : index.second
         ));
-    }
-}
-
-void SudokuSolver::validateTable(const Table &table)
-{
-    for (size_t i = 0; i < table.size(); i++) {
-        for (size_t j = 0; j < table[i].size(); j++) {
-            try {
-                Self::validateCellValue(table[i][j]);
-            } catch (std::invalid_argument &e) {
-                throw std::invalid_argument(flossy::format(
-                    std::string(e.what()) + ", at index ({}, {})", i, j
-                ));
-            }
-        }
     }
 }
