@@ -6,3 +6,4 @@ a.exe
 # IDE-related
 compile_flags.txt
 compile_commands.json
+.cache/
