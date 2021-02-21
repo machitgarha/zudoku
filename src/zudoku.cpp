@@ -7,10 +7,6 @@
 
 using namespace Zudoku;
 
-SudokuSolver::SudokuSolver()
-{
-}
-
 SudokuSolver::SudokuSolver(Table table):
     table(table)
 {
@@ -20,6 +16,7 @@ SudokuSolver::SudokuSolver(Table table):
 SudokuSolver::SudokuSolver(Table &&table):
     table(std::move(table))
 {
+    this->validateTable(table);
 }
 
 SudokuSolver::This SudokuSolver::setTable(Table table)

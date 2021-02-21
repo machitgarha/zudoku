@@ -21,7 +21,8 @@ namespace Zudoku
          */
         using Table = std::array<std::array<CellValue, 9>, 9>;
 
-        SudokuSolver();
+        SudokuSolver() = delete;
+
         SudokuSolver(Table);
         SudokuSolver(Table &&);
 
