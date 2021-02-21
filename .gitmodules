@@ -1,0 +1,3 @@
+[submodule "lib/flossy"]
+	path = lib/flossy
+	url = https://github.com/rnlf/flossy
