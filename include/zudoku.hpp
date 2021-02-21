@@ -33,6 +33,8 @@ namespace Zudoku
         This fill(size_t, size_t, CellValue);
         This clear(size_t, size_t);
 
+        This solve();
+
     protected:
         /*
          * The algorithm to fill the table is as follows:
@@ -72,39 +74,42 @@ namespace Zudoku
          */
 
         /**
-         * The type representing information of an empty cell in the Sudoku table,
-         * consisting of its index and its tried and untried possibilities. Keeping tried
-         * possibilities is necessary to revert back from a wrong try path.
+         * The type representing data of an empty cell in the Sudoku table, consisting of
+         * its index and its tried and untried possibilities. Keeping tried possibilities
+         * is necessary to revert back from a wrong try path.
          */
-        struct EmptyCellInfo
+        struct EmptyCellData
         {
             using Possibilities = std::stack<CellValue>;
 
             CellIndex index;
 
             struct {
-                Possibilities untried;
-                Possibilities tried;
+                Possibilities tried, untried;
             } possibilities;
         };
 
-        using EmptyCellInfoStack = std::stack<EmptyCellInfo>;
-
         /**
-         * Type to hold what numbers are available in a block, including a row, a column,
-         * or a 3x3 square. Index 0 should be redundant.
+         * Tells whether a value exist in a block or not. By block, we mean either a row,
+         * a column, or a 3x3 square. Index 0 should be redundant.
          */
-        using NumberAvailability = std::array<bool, 10>;
-
-        using NumberAvailabilityArray = std::array<NumberAvailability, 9>;
+        using ValueExistence = std::array<bool, 10>;
 
         struct {
-            NumberAvailabilityArray rows, columns, squares;
-        } numberAvailability;
+            std::stack<EmptyCellData> toBeFilled, filled;
+        } emptyCells;
+
+        struct {
+            std::array<ValueExistence, 9> rows, columns, squares;
+        } valueExistence;
 
         static void validateCellValue(const CellValue &);
         static void validateCellIndex(const CellIndex &);
         static void validateTable(const Table &);
+
+        This setEmptyCellsAndValueExistence();
+        This setEmptyCellsPossibilities();
+        This tryEmptyCellsPossibilities();
 
     private:
         Table table;
