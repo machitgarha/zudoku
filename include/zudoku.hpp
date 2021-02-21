@@ -23,6 +23,7 @@ namespace Zudoku
 
         SudokuSolver() = delete;
 
+        /* Validation of the Sudoku table happens during solving it, in-place. */
         SudokuSolver(Table);
         SudokuSolver(Table &&);
 
@@ -100,19 +101,32 @@ namespace Zudoku
         } emptyCells;
 
         struct {
-            std::array<ValueExistence, 9> rows, columns, squares;
+            std::array<ValueExistence, 9>
+                rows = {0},
+                columns = {0},
+                squares = {0};
         } valueExistence;
 
         static void validateCellValue(const CellValue &);
         static void validateCellIndex(const CellIndex &);
 
-        This setEmptyCellsAndValueExistence();
-        This makeValueExist(const CellIndex &, const CellValue &);
+        constexpr static CellLinearIndex getRowIndex(const CellIndex &);
+        constexpr static CellLinearIndex getColumnIndex(const CellIndex &);
+        constexpr static CellLinearIndex getSquareIndex(const CellIndex &);
 
-        This setEmptyCellsPossibilities();
+        This makeEmptyCellsAndValueExistence();
+
+        template<bool ValidateIndex = true, bool ValidateValue = true>
+        This makeValueVisibleToBlocks(const CellIndex &, const CellValue &);
+
+        This makeEmptyCellsPossibilities();
         This tryEmptyCellsPossibilities();
 
     private:
         Table table;
+
+        This makeValueVisibleToRow(const CellLinearIndex &, const CellValue &);
+        This makeValueVisibleToColumn(const CellLinearIndex &, const CellValue &);
+        This makeValueVisibleToSquare(const CellLinearIndex &, const CellValue &);
     };
 }

@@ -19,8 +19,8 @@ SudokuSolver::SudokuSolver(Table &&table):
 
 SudokuSolver::This SudokuSolver::solve()
 {
-    this->setEmptyCellsAndValueExistence();
-    this->setEmptyCellsPossibilities();
+    this->makeEmptyCellsAndValueExistence();
+    this->makeEmptyCellsPossibilities();
     this->tryEmptyCellsPossibilities();
 
     return *this;
@@ -85,3 +85,59 @@ void SudokuSolver::validateCellIndex(const CellIndex &index)
         ));
     }
 }
+
+SudokuSolver::This SudokuSolver::makeEmptyCellsAndValueExistence()
+{
+    for (size_t i = 0; i < 9; i++) {
+        for (size_t j = 0; j < 9; j++) {
+            // Checking whether it is empty or not
+            if (this->table[i][j] == 0) {
+                this->emptyCells.toBeFilled.push({
+                    {i, j},
+                    {{}, {}}
+                });
+            } else {
+                // Implicit validation is done for the value
+                this->makeValueVisibleToBlocks<false, true>({i, j}, this->table[i][j]);
+            }
+        }
+    }
+
+    return *this;
+}
+
+template<bool ValidateIndex, bool ValidateValue>
+SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
+    const CellIndex &index,
+    const CellValue &value
+) {
+    if constexpr (ValidateIndex) {
+        this->validateCellIndex(index);
+    }
+    if constexpr (ValidateValue) {
+        this->validateCellValue(value);
+    }
+
+    this->makeValueVisibleToRow(this->getRowIndex(index), value);
+    this->makeValueVisibleToColumn(this->getColumnIndex(index), value);
+    this->makeValueVisibleToSquare(this->getSquareIndex(index), value);
+
+    return *this;
+}
+
+extern template SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks<false, false>(
+    const CellIndex &index,
+    const CellValue &value
+);
+extern template SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks<false, true>(
+    const CellIndex &index,
+    const CellValue &value
+);
+extern template SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks<true, false>(
+    const CellIndex &index,
+    const CellValue &value
+);
+extern template SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks<true, true>(
+    const CellIndex &index,
+    const CellValue &value
+);
