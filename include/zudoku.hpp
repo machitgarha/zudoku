@@ -274,13 +274,13 @@ namespace Zudoku
         bool isCellEmpty(const CellIndex &) const noexcept;
 
     private:
+        Table table;
+
         struct NextCorrectPossibility
         {
             bool found;
             CellValue value = 0;
         };
-
-        Table table;
 
         NextCorrectPossibility findNextCorrectPossibility(EmptyCellData &) const;
     };

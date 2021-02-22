@@ -140,3 +140,22 @@ bool SudokuSolver::isCellEmpty(const CellIndex &index) const noexcept
 {
     return this->table[index.first][index.second] == 0;
 }
+
+SudokuSolver::NextCorrectPossibility SudokuSolver::findNextCorrectPossibility(
+    EmptyCellData &cell
+) const {
+    NextCorrectPossibility possibility = {false};
+
+    while (possibility.found || !cell.possibilities.untried.empty()) {
+        CellValue value = cell.possibilities.untried.move_top();
+
+        if (!this->doesValueExistInAnySharedBlocks(cell.index, value)) {
+            possibility.found = true;
+            possibility.value = value;
+        }
+
+        cell.possibilities.tried.push(std::move(value));
+    }
+
+    return possibility;
+}
