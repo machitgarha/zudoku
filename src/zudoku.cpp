@@ -32,28 +32,6 @@ SudokuSolver::Table SudokuSolver::getTable() const
     return this->table;
 }
 
-void SudokuSolver::validateCellValue(const CellValue &value)
-{
-    if (value > 9) {
-        throw std::invalid_argument(flossy::format(
-            "Expected table cell value to be in the range of 0 to 9, got {}", value
-        ));
-    }
-}
-
-void SudokuSolver::validateCellIndex(const CellIndex &index)
-{
-    bool invalidFirstIndex;
-
-    if ((invalidFirstIndex = index.first > 9) || index.second > 9) {
-        throw std::invalid_argument(flossy::format(
-            "Expected table {} index to be in the range of 0 to 8, got {}",
-            invalidFirstIndex ? "row" : "column",
-            invalidFirstIndex ? index.first : index.second
-        ));
-    }
-}
-
 SudokuSolver::This SudokuSolver::makeEmptyCellsAndBlocksData()
 {
     for (size_t i = 0; i < 9; i++) {
