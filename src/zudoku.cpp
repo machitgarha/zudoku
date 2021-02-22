@@ -104,7 +104,7 @@ SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
         this->validateCellValue(value);
     }
 
-    for (const BlockSetData &b : this->blockSetDataArray) {
+    for (BlockSetData &b : this->blockSetDataArray) {
         bool &valueExist = this->getIsValueExist(b, index, value);
 
         if (valueExist) {

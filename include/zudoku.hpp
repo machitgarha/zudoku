@@ -139,9 +139,9 @@ namespace Zudoku
         static void validateCellValue(const CellValue &);
         static void validateCellIndex(const CellIndex &);
 
-        static CellLinearIndex getRowIndex(const CellIndex &);
-        static CellLinearIndex getColumnIndex(const CellIndex &);
-        static CellLinearIndex getSquareIndex(const CellIndex &);
+        constexpr static CellLinearIndex getRowIndex(const CellIndex &);
+        constexpr static CellLinearIndex getColumnIndex(const CellIndex &);
+        constexpr static CellLinearIndex getSquareIndex(const CellIndex &);
 
         constexpr static bool &getIsValueExist(
             const BlockSetData &,
