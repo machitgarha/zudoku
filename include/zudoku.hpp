@@ -35,24 +35,6 @@ namespace Zudoku
             CellLinearIndex(const Self &) = default;
             CellLinearIndex(Self &&) = default;
 
-            constexpr bool operator==(const Self &other) const noexcept
-            {
-                return this->value == other.value;
-            }
-            constexpr bool operator!=(const Self &other) const noexcept
-            {
-                return !this->operator==(other);
-            }
-
-            constexpr Self operator*(int n) const noexcept
-            {
-                return {this->value * n};
-            }
-            constexpr Self operator/(int n) const noexcept
-            {
-                return {this->value / n};
-            }
-
             constexpr Self operator+(const Self &other) const noexcept
             {
                 return {this->value + other.value};
@@ -93,15 +75,6 @@ namespace Zudoku
 
             CellValue(const Self &) = default;
             CellValue(Self &&) = default;
-
-            constexpr bool operator==(const Self &other) const noexcept
-            {
-                return this->value == other.value;
-            }
-            constexpr bool operator!=(const Self &other) const noexcept
-            {
-                return !this->operator==(other);
-            }
 
             constexpr operator UInt() const noexcept
             {
@@ -278,7 +251,6 @@ namespace Zudoku
 
         This makeEmptyCellsAndBlocksData();
 
-        template<bool ValidateIndex = true, bool ValidateValue = true>
         This makeValueVisibleToBlocks(const CellIndex &, const CellValue &);
 
         This makeEmptyCellsPossibilities();

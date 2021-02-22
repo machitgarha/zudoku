@@ -44,7 +44,7 @@ SudokuSolver::This SudokuSolver::makeEmptyCellsAndBlocksData()
                 });
             } else {
                 // Implicit validation is done for the value
-                this->makeValueVisibleToBlocks<false, true>({i, j}, this->table[i][j]);
+                this->makeValueVisibleToBlocks({i, j}, this->table[i][j]);
             }
         }
     }
@@ -52,18 +52,10 @@ SudokuSolver::This SudokuSolver::makeEmptyCellsAndBlocksData()
     return *this;
 }
 
-template<bool ValidateIndex, bool ValidateValue>
 SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
     const CellIndex &index,
     const CellValue &value
 ) {
-    if constexpr (ValidateIndex) {
-        this->validateCellIndex(index);
-    }
-    if constexpr (ValidateValue) {
-        this->validateCellValue(value);
-    }
-
     for (BlockSetData &b : this->blockSetDataArray) {
         bool &valueExist = this->valueExistInBlock(b, index, value);
 
@@ -78,23 +70,6 @@ SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
 
     return *this;
 }
-
-template SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks<false, false>(
-    const CellIndex &index,
-    const CellValue &value
-);
-template SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks<false, true>(
-    const CellIndex &index,
-    const CellValue &value
-);
-template SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks<true, false>(
-    const CellIndex &index,
-    const CellValue &value
-);
-template SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks<true, true>(
-    const CellIndex &index,
-    const CellValue &value
-);
 
 SudokuSolver::This SudokuSolver::makeEmptyCellsPossibilities()
 {
