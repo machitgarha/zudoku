@@ -26,20 +26,6 @@ SudokuSolver::This SudokuSolver::solve()
     return *this;
 }
 
-SudokuSolver::This SudokuSolver::setTable(Table table)
-{
-    this->table = table;
-
-    return *this;
-}
-
-SudokuSolver::This SudokuSolver::setTable(Table &&table)
-{
-    this->table = std::move(table);
-
-    return *this;
-}
-
 SudokuSolver::Table SudokuSolver::getTable() const
 {
     return this->table;
@@ -118,9 +104,9 @@ SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
         this->validateCellValue(value);
     }
 
-    this->makeValueVisibleToRow(this->getRowIndex(index), value);
-    this->makeValueVisibleToColumn(this->getColumnIndex(index), value);
-    this->makeValueVisibleToSquare(this->getSquareIndex(index), value);
+    this->valueExistence.rows[this->getRowIndex(index)] = value;
+    this->valueExistence.columns[this->getColumnIndex(index)] = value;
+    this->valueExistence.squares[this->getSquareIndex(index)] = value;
 
     return *this;
 }

@@ -23,14 +23,15 @@ namespace Zudoku
 
         SudokuSolver() = delete;
 
-        /* Validation of the Sudoku table happens during solving it, in-place. */
+        /**
+         * Constructs the table without validating it. The validation is done in-place when
+         * solve() function is called.
+         */
         SudokuSolver(Table);
         SudokuSolver(Table &&);
 
         This solve();
 
-        This setTable(Table);
-        This setTable(Table &&);
         Table getTable() const;
 
         This fill(size_t, size_t, CellValue);
@@ -124,9 +125,5 @@ namespace Zudoku
 
     private:
         Table table;
-
-        This makeValueVisibleToRow(const CellLinearIndex &, const CellValue &);
-        This makeValueVisibleToColumn(const CellLinearIndex &, const CellValue &);
-        This makeValueVisibleToSquare(const CellLinearIndex &, const CellValue &);
     };
 }
