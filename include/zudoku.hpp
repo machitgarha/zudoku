@@ -235,14 +235,14 @@ namespace Zudoku
             return index.first / 3 * 3 + index.second / 3;
         }
 
-        constexpr static bool valueExistInBlock(
+        constexpr static bool doesValueExistInBlock(
             const BlockSetData &blockSetData,
             const CellIndex &index,
             const CellValue &value
         ) {
             return blockSetData.valueExist[blockSetData.indexGetter(index)][value];
         }
-        constexpr static bool &valueExistInBlock(
+        constexpr static bool &doesValueExistInBlock(
             BlockSetData &blockSetData,
             const CellIndex &index,
             const CellValue &value
@@ -250,12 +250,12 @@ namespace Zudoku
             return blockSetData.valueExist[blockSetData.indexGetter(index)][value];
         }
 
-        constexpr bool valueExistInAllSharedBlocks(
+        constexpr bool doesValueExistInAnySharedBlocks(
             const CellIndex &index,
             const CellValue &value
         ) const {
             for (const BlockSetData &b : this->blockSetDataArray) {
-                if (Self::valueExistInBlock(b, index, value)) {
+                if (Self::doesValueExistInBlock(b, index, value)) {
                     return true;
                 }
             }
@@ -269,25 +269,9 @@ namespace Zudoku
         This makeEmptyCellsPossibilities();
         This tryEmptyCellsPossibilities();
 
-        This fillCell(const CellIndex &, const CellValue &);
+        This replaceCell(const CellIndex &, const CellValue &);
         This clearCell(const CellIndex &);
         bool isCellEmpty(const CellIndex &) const noexcept;
-
-        constexpr This clearCellIfNotEmpty(const CellIndex &index)
-        {
-            if (!this->isCellEmpty(index)) {
-                this->clearCell(index);
-            }
-            return *this;
-        }
-
-        constexpr This replaceCell(const CellIndex &index, const CellValue &value)
-        {
-            (*this)
-                .clearCellIfNotEmpty(index)
-                .fillCell(index, value);
-            return *this;
-        }
 
     private:
         struct NextCorrectPossibility

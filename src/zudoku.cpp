@@ -57,7 +57,7 @@ SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
     const CellValue &value
 ) {
     for (BlockSetData &b : this->blockSetDataArray) {
-        bool &valueExist = this->valueExistInBlock(b, index, value);
+        bool &valueExist = this->doesValueExistInBlock(b, index, value);
 
         if (valueExist) {
             throw std::invalid_argument(flossy::format(
@@ -79,7 +79,7 @@ SudokuSolver::This SudokuSolver::makeEmptyCellsPossibilities()
         EmptyCellData cell = this->emptyCells.toBeFilled.move_top();
 
         for (size_t i = 1; i <= 9; i++) {
-            if (!this->valueExistInAllSharedBlocks(cell.index, i)) {
+            if (!this->doesValueExistInAnySharedBlocks(cell.index, i)) {
                 cell.possibilities.untried.push(i);
             }
         }
@@ -105,7 +105,7 @@ SudokuSolver::This SudokuSolver::tryEmptyCellsPossibilities()
 
             this->emptyCells.filled.push(curEmptyCell);
         } else {
-            this->clearCellIfNotEmpty(curEmptyCell.index);
+            this->clearCell(curEmptyCell.index);
 
             this->emptyCells.toBeFilled.push(std::move(curEmptyCell));
             this->emptyCells.toBeFilled.push(this->emptyCells.filled.move_top());
@@ -113,4 +113,39 @@ SudokuSolver::This SudokuSolver::tryEmptyCellsPossibilities()
     }
 
     return *this;
+}
+
+SudokuSolver::This SudokuSolver::replaceCell(
+    const CellIndex &index,
+    const CellValue &newValue
+) {
+    this->clearCell(index);
+
+    CellValue &curValue = this->table[index.first][index.second];
+
+    for (BlockSetData &b: this->blockSetDataArray) {
+        b.valueExist[b.indexGetter(index)][newValue] = true;
+    }
+    curValue = newValue;
+
+    return *this;
+}
+
+SudokuSolver::This SudokuSolver::clearCell(const CellIndex &index)
+{
+    CellValue &curValue = this->table[index.first][index.second];
+
+    if (!this->isCellEmpty(index)) {
+        for (BlockSetData &b: this->blockSetDataArray) {
+            b.valueExist[b.indexGetter(index)][curValue] = false;
+        }
+        curValue = 0;
+    }
+
+    return *this;
+}
+
+bool SudokuSolver::isCellEmpty(const CellIndex &index) const noexcept
+{
+    return this->table[index.first][index.second] == 0;
 }
