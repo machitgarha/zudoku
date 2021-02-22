@@ -1,3 +1,6 @@
+#ifndef ZUDOKU_SUDOKU_SOLVER_HPP
+#define ZUDOKU_SUDOKU_SOLVER_HPP
+
 #include <array>
 #include <stack>
 
@@ -127,3 +130,5 @@ namespace Zudoku
         Table table;
     };
 }
+
+#endif // ZUDOKU_SUDOKU_SOLVER_HPP
