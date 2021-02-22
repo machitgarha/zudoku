@@ -105,7 +105,7 @@ namespace Zudoku
          * Data of a set of same-type blocks. Block is either a row, a column or a 3x3
          * square, that is a collection of exactly 9 unique cells, filled with 1 to 9.
          *
-         * valueExistence takes care of existence of values in all blocks one by one. Every
+         * valueExist takes care of existence of values in all blocks one by one. Every
          * block is indexed, and a specific one could be catched using its index.
          *
          * The function (i.e. indexGetter) specified in order to find block index based on
@@ -119,7 +119,7 @@ namespace Zudoku
         struct BlockSetData
         {
             const std::string name;
-            std::array<ValueExistence, 9> valueExistence;
+            std::array<ValueExistence, 9> valueExist;
             CellLinearIndex (&indexGetter)(const CellIndex &);
         };
 
@@ -152,22 +152,22 @@ namespace Zudoku
             return index.first / 3 * 3 + index.second / 3;
         }
 
-        constexpr static bool getIsValueExist(
+        constexpr static bool valueExist(
             const BlockSetData &blockSetData,
             const CellIndex &index,
             const CellValue &value
         ) {
-            return blockSetData.valueExistence[blockSetData.indexGetter(index)][value];
+            return blockSetData.valueExist[blockSetData.indexGetter(index)][value];
         }
-        constexpr static bool &getIsValueExist(
+        constexpr static bool &valueExist(
             BlockSetData &blockSetData,
             const CellIndex &index,
             const CellValue &value
         ) {
-            return blockSetData.valueExistence[blockSetData.indexGetter(index)][value];
+            return blockSetData.valueExist[blockSetData.indexGetter(index)][value];
         }
 
-        This makeEmptyCellsAndValueExistence();
+        This makeEmptyCellsAndBlocksData();
 
         template<bool ValidateIndex = true, bool ValidateValue = true>
         This makeValueVisibleToBlocks(const CellIndex &, const CellValue &);

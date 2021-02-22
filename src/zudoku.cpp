@@ -20,7 +20,7 @@ SudokuSolver::SudokuSolver(Table &&table):
 SudokuSolver::This SudokuSolver::solve()
 {
     (*this)
-        .makeEmptyCellsAndValueExistence()
+        .makeEmptyCellsAndBlocksData()
         .makeEmptyCellsPossibilities()
         .tryEmptyCellsPossibilities();
 
@@ -73,7 +73,7 @@ void SudokuSolver::validateCellIndex(const CellIndex &index)
     }
 }
 
-SudokuSolver::This SudokuSolver::makeEmptyCellsAndValueExistence()
+SudokuSolver::This SudokuSolver::makeEmptyCellsAndBlocksData()
 {
     for (size_t i = 0; i < 9; i++) {
         for (size_t j = 0; j < 9; j++) {
@@ -106,7 +106,7 @@ SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
     }
 
     for (BlockSetData &b : this->blockSetDataArray) {
-        bool &valueExist = this->getIsValueExist(b, index, value);
+        bool &valueExist = this->valueExist(b, index, value);
 
         if (valueExist) {
             throw std::invalid_argument(flossy::format(
@@ -195,7 +195,7 @@ bool SudokuSolver::hasValueInSharedBlocks(
     const CellValue &value
 ) const {
     for (const BlockSetData &b : this->blockSetDataArray) {
-        if (this->getIsValueExist(b, index, value)) {
+        if (this->valueExist(b, index, value)) {
             return true;
         }
     }
