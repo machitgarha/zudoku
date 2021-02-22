@@ -35,15 +35,33 @@ namespace Zudoku
             CellLinearIndex(const Self &) = default;
             CellLinearIndex(Self &&) = default;
 
-            bool operator==(const Self &) const noexcept;
-            bool operator!=(const Self &) const noexcept;
+            constexpr bool operator==(const Self &other) const noexcept
+            {
+                return this->value == other.value;
+            }
+            constexpr bool operator!=(const Self &other) const noexcept
+            {
+                return !this->operator==(other);
+            }
 
-            Self operator*(int) const noexcept;
-            Self operator/(int) const noexcept;
+            constexpr Self operator*(int n) const noexcept
+            {
+                return {this->value * n};
+            }
+            constexpr Self operator/(int n) const noexcept
+            {
+                return {this->value / n};
+            }
 
-            Self operator+(const Self &) const noexcept;
+            constexpr Self operator+(const Self &other) const noexcept
+            {
+                return {this->value + other.value};
+            }
 
-            operator UInt() const noexcept;
+            constexpr operator UInt() const noexcept
+            {
+                return this->value;
+            }
 
         private:
             UInt value;
@@ -76,10 +94,19 @@ namespace Zudoku
             CellValue(const Self &) = default;
             CellValue(Self &&) = default;
 
-            bool operator==(const Self &) const noexcept;
-            bool operator!=(const Self &) const noexcept;
+            constexpr bool operator==(const Self &other) const noexcept
+            {
+                return this->value == other.value;
+            }
+            constexpr bool operator!=(const Self &other) const noexcept
+            {
+                return !this->operator==(other);
+            }
 
-            operator UInt() const noexcept;
+            constexpr operator UInt() const noexcept
+            {
+                return this->value;
+            }
 
         private:
             UInt value;
