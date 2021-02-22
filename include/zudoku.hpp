@@ -264,7 +264,7 @@ namespace Zudoku
 
         This makeEmptyCellsAndBlocksData();
 
-        This makeValueVisibleToBlocks(const CellIndex &, const CellValue &);
+        This setValueExistInBlocks(const CellIndex &, const CellValue &, bool = true);
 
         This makeEmptyCellsPossibilities();
         This tryEmptyCellsPossibilities();

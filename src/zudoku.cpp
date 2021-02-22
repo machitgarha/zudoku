@@ -3,8 +3,6 @@
 #include <stdexcept>
 #include <string>
 
-#include "flossy.h"
-
 using namespace Zudoku;
 
 SudokuSolver::SudokuSolver(Table table):
@@ -44,7 +42,7 @@ SudokuSolver::This SudokuSolver::makeEmptyCellsAndBlocksData()
                 });
             } else {
                 // Implicit validation is done for the value
-                this->makeValueVisibleToBlocks({i, j}, this->table[i][j]);
+                this->setValueExistInBlocks({i, j}, this->table[i][j]);
             }
         }
     }
@@ -52,20 +50,21 @@ SudokuSolver::This SudokuSolver::makeEmptyCellsAndBlocksData()
     return *this;
 }
 
-SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
+SudokuSolver::This SudokuSolver::setValueExistInBlocks(
     const CellIndex &index,
-    const CellValue &value
+    const CellValue &value,
+    bool existNewState
 ) {
-    for (BlockSetData &b : this->blockSetDataArray) {
-        bool &valueExist = this->doesValueExistInBlock(b, index, value);
+    for (BlockSetData &b: this->blockSetDataArray) {
+        bool &existCurState = this->doesValueExistInBlock(b, index, value);
 
-        if (valueExist) {
+        if (existCurState == existNewState) {
             throw std::invalid_argument(flossy::format(
-                "Two equal values found in {} {} of the table (value: {})",
+                "Two equal values encountered in {} {} of the table (value: {})",
                 b.name, b.indexGetter(index), value
             ));
         }
-        valueExist = true;
+        existCurState = existNewState;
     }
 
     return *this;
@@ -120,13 +119,9 @@ SudokuSolver::This SudokuSolver::replaceCell(
     const CellValue &newValue
 ) {
     this->clearCell(index);
+    this->setValueExistInBlocks(index, newValue);
 
-    CellValue &curValue = this->table[index.first][index.second];
-
-    for (BlockSetData &b: this->blockSetDataArray) {
-        b.valueExist[b.indexGetter(index)][newValue] = true;
-    }
-    curValue = newValue;
+    this->table[index.first][index.second] = newValue;
 
     return *this;
 }
@@ -135,12 +130,8 @@ SudokuSolver::This SudokuSolver::clearCell(const CellIndex &index)
 {
     CellValue &curValue = this->table[index.first][index.second];
 
-    if (!this->isCellEmpty(index)) {
-        for (BlockSetData &b: this->blockSetDataArray) {
-            b.valueExist[b.indexGetter(index)][curValue] = false;
-        }
-        curValue = 0;
-    }
+    this->setValueExistInBlocks(index, curValue, false);
+    curValue = 0;
 
     return *this;
 }
