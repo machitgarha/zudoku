@@ -2,7 +2,8 @@
 #define ZUDOKU_SUDOKU_SOLVER_HPP
 
 #include <array>
-#include <stack>
+
+#include "stack.hpp"
 
 namespace Zudoku
 {
@@ -85,7 +86,7 @@ namespace Zudoku
          */
         struct EmptyCellData
         {
-            using Possibilities = std::stack<CellValue>;
+            using Possibilities = stack<CellValue>;
 
             CellIndex index;
 
@@ -101,7 +102,7 @@ namespace Zudoku
         using ValueExistence = std::array<bool, 10>;
 
         struct {
-            std::stack<EmptyCellData> toBeFilled, filled;
+            stack<EmptyCellData> toBeFilled, filled;
         } emptyCells;
 
         struct {
