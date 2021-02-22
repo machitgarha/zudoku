@@ -78,6 +78,9 @@ namespace Zudoku
             using UInt = unsigned int;
 
         public:
+            constexpr CellValue()
+            {}
+
             constexpr CellValue(UInt value): value(value)
             {
                 this->validate(value);
@@ -95,7 +98,7 @@ namespace Zudoku
             }
 
         private:
-            UInt value;
+            UInt value = 0;
 
             constexpr static void validate(UInt value)
             {
