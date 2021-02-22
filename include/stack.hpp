@@ -14,12 +14,18 @@ namespace Zudoku
         /**
          * Moves the top element value in the stack and removes it.
          */
-        T &&move_top()
+        T move_top()
         {
-            T &&result = std::move(*this->c.rbegin().operator->());
+            T result = std::move(*this->c.rbegin().operator->());
 
             this->pop();
-            return std::move(result);
+
+            /*
+             * Doing std::move() explicitly prevents compiler from doing move elision, and
+             * should cause the move constructor being called twice (i.e. plus the move
+             * above).
+             */
+            return result;
         }
     };
 }
