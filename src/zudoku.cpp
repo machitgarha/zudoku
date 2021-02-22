@@ -106,7 +106,7 @@ SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
     }
 
     for (BlockSetData &b : this->blockSetDataArray) {
-        bool &valueExist = this->valueExist(b, index, value);
+        bool &valueExist = this->valueExistInBlock(b, index, value);
 
         if (valueExist) {
             throw std::invalid_argument(flossy::format(
@@ -145,7 +145,7 @@ SudokuSolver::This SudokuSolver::makeEmptyCellsPossibilities()
         EmptyCellData cell = this->emptyCells.toBeFilled.move_top();
 
         for (size_t i = 1; i <= 9; i++) {
-            if (!this->hasValueInSharedBlocks(cell.index, i)) {
+            if (!this->valueExistInAllSharedBlocks(cell.index, i)) {
                 cell.possibilities.untried.push(i);
             }
         }
@@ -165,39 +165,27 @@ SudokuSolver::This SudokuSolver::tryEmptyCellsPossibilities()
     while (!this->emptyCells.toBeFilled.empty()) {
         EmptyCellData curEmptyCell = this->emptyCells.toBeFilled.move_top();
 
-        while (!curEmptyCell.possibilities.untried.empty()) {
-            CellValue value = curEmptyCell.possibilities.untried.move_top();
-
-            if (!this->hasValueInSharedBlocks(curEmptyCell.index, value)) {
-                this->setCellValue(curEmptyCell.index, value);
-                // Go to the next empty cell
-                break;
-            }
-
-            curEmptyCell.possibilities.tried.push(value);
-        }
-
         if (curEmptyCell.possibilities.untried.empty()) {
             curEmptyCell.possibilities.tried.swap(curEmptyCell.possibilities.untried);
 
-            this->emptyCells.toBeFilled.push(curEmptyCell);
+            this->emptyCells.toBeFilled.push(std::move(curEmptyCell));
             this->emptyCells.toBeFilled.push(this->emptyCells.filled.move_top());
         } else {
+            while (!curEmptyCell.possibilities.untried.empty()) {
+                CellValue value = curEmptyCell.possibilities.untried.move_top();
+
+                if (!this->valueExistInAllSharedBlocks(curEmptyCell.index, value)) {
+                    this->setCellValue(curEmptyCell.index, value);
+                    // Go to the next empty cell
+                    break;
+                }
+
+                curEmptyCell.possibilities.tried.push(value);
+            }
+
             this->emptyCells.filled.push(curEmptyCell);
         }
     }
 
     return *this;
-}
-
-bool SudokuSolver::hasValueInSharedBlocks(
-    const CellIndex &index,
-    const CellValue &value
-) const {
-    for (const BlockSetData &b : this->blockSetDataArray) {
-        if (this->valueExist(b, index, value)) {
-            return true;
-        }
-    }
-    return false;
 }

@@ -152,19 +152,31 @@ namespace Zudoku
             return index.first / 3 * 3 + index.second / 3;
         }
 
-        constexpr static bool valueExist(
+        constexpr static bool valueExistInBlock(
             const BlockSetData &blockSetData,
             const CellIndex &index,
             const CellValue &value
         ) {
             return blockSetData.valueExist[blockSetData.indexGetter(index)][value];
         }
-        constexpr static bool &valueExist(
+        constexpr static bool &valueExistInBlock(
             BlockSetData &blockSetData,
             const CellIndex &index,
             const CellValue &value
         ) {
             return blockSetData.valueExist[blockSetData.indexGetter(index)][value];
+        }
+
+        constexpr bool valueExistInAllSharedBlocks(
+            const CellIndex &index,
+            const CellValue &value
+        ) const {
+            for (const BlockSetData &b : this->blockSetDataArray) {
+                if (Self::valueExistInBlock(b, index, value)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         This makeEmptyCellsAndBlocksData();
@@ -183,8 +195,6 @@ namespace Zudoku
 
     private:
         Table table;
-
-        bool hasValueInSharedBlocks(const CellIndex &, const CellValue &) const;
     };
 }
 
