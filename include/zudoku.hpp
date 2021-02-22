@@ -1,9 +1,12 @@
 #ifndef ZUDOKU_SUDOKU_SOLVER_HPP
 #define ZUDOKU_SUDOKU_SOLVER_HPP
 
+#include <algorithm>
 #include <array>
+#include <stdexcept>
 #include <string>
 
+#include "flossy.h"
 #include "stack.hpp"
 
 namespace Zudoku
@@ -11,13 +14,100 @@ namespace Zudoku
     class SudokuSolver
     {
     private:
-        using This = SudokuSolver &;
         using Self = SudokuSolver;
+        using This = Self &;
 
-        using CellLinearIndex = unsigned int;
+    public:
+        /**
+         * A 1-dimension index for accessing a cell inside the table.
+         */
+        class CellLinearIndex
+        {
+        private:
+            using Self = CellLinearIndex;
+            using This = Self &;
+            using UInt = unsigned int;
+
+        public:
+            constexpr CellLinearIndex(UInt value): value(value)
+            {
+                this->validate(value);
+            }
+
+            CellLinearIndex(const Self &) = default;
+            CellLinearIndex(Self &&) = default;
+
+            This operator=(const Self &) = default;
+            This operator=(Self &&) = default;
+
+            constexpr Self operator+(const Self &other) const noexcept
+            {
+                return {this->value + other.value};
+            }
+
+            constexpr operator UInt() const noexcept
+            {
+                return this->value;
+            }
+
+            constexpr static std::array<Self, 9> forEach() noexcept
+            {
+                return {0, 1, 2, 3, 4, 5, 6, 7, 8};
+            }
+
+        private:
+            UInt value;
+
+            constexpr static void validate(UInt value)
+            {
+                if (value > 9) {
+                    throw std::invalid_argument(flossy::format(
+                        "Expected table index to be in the range of 0 to 8, got {}",
+                        value
+                    ));
+                }
+            }
+        };
+
         using CellIndex = std::pair<CellLinearIndex, CellLinearIndex>;
 
-        using CellValue = unsigned int;
+        class CellValue
+        {
+        private:
+            using Self = CellValue;
+            using This = Self &;
+            using UInt = unsigned int;
+
+        public:
+            constexpr CellValue(UInt value): value(value)
+            {
+                this->validate(value);
+            }
+
+            CellValue(const Self &) = default;
+            CellValue(Self &&) = default;
+
+            This operator=(const Self &) = default;
+            This operator=(Self &&) = default;
+
+            constexpr operator UInt() const noexcept
+            {
+                return this->value;
+            }
+
+        private:
+            UInt value;
+
+            constexpr static void validate(UInt value)
+            {
+                if (value > 9) {
+                    throw std::invalid_argument(flossy::format(
+                        "Expected table cell value to be in the range of 0 to 9, got {}",
+                        value
+                    ));
+                }
+            }
+        };
 
         /**
          * A sudoku table. For the value of each cell, number in the range of 1 to 9
@@ -133,9 +223,6 @@ namespace Zudoku
             {"square", {0}, Self::getSquareIndex},
         }};
 
-        static void validateCellValue(const CellValue &);
-        static void validateCellIndex(const CellIndex &);
-
         constexpr static CellLinearIndex getRowIndex(const CellIndex &index)
         {
             return index.first;
@@ -178,7 +265,6 @@ namespace Zudoku
 
         This makeEmptyCellsAndBlocksData();
 
-        template<bool ValidateIndex = true, bool ValidateValue = true>
         This makeValueVisibleToBlocks(const CellIndex &, const CellValue &);
 
         This makeEmptyCellsPossibilities();
