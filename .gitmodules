@@ -1,3 +1,6 @@
 [submodule "lib/flossy"]
 	path = lib/flossy
 	url = https://github.com/rnlf/flossy
+[submodule "lib/rapidcsv"]
+	path = lib/rapidcsv
+	url = https://github.com/d99kris/rapidcsv

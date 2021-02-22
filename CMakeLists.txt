@@ -13,6 +13,7 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PUBLIC
     include/
 
-    # Libraries
+    # Static libraries
     lib/flossy
+    lib/rapidcsv/src
 )
