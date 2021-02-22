@@ -10,7 +10,7 @@ namespace Zudoku
 {
     class SudokuSolver
     {
-    public:
+    private:
         using This = SudokuSolver &;
         using Self = SudokuSolver;
 
@@ -38,9 +38,6 @@ namespace Zudoku
         This solve();
 
         Table getTable() const;
-
-        This fill(size_t, size_t, CellValue);
-        This clear(size_t, size_t);
 
     protected:
         /*
@@ -187,14 +184,36 @@ namespace Zudoku
         This makeEmptyCellsPossibilities();
         This tryEmptyCellsPossibilities();
 
-        constexpr inline This setCellValue(const CellIndex &index, const CellValue &value)
+        This fillCell(const CellIndex &, const CellValue &);
+        This clearCell(const CellIndex &);
+        bool isCellEmpty(const CellIndex &) const noexcept;
+
+        constexpr This clearCellIfNotEmpty(const CellIndex &index)
         {
-            this->table[index.first][index.second] = value;
+            if (!this->isCellEmpty(index)) {
+                this->clearCell(index);
+            }
+            return *this;
+        }
+
+        constexpr This replaceCell(const CellIndex &index, const CellValue &value)
+        {
+            (*this)
+                .clearCellIfNotEmpty(index)
+                .fillCell(index, value);
             return *this;
         }
 
     private:
+        struct NextCorrectPossibility
+        {
+            bool found;
+            CellValue value = 0;
+        };
+
         Table table;
+
+        NextCorrectPossibility findNextCorrectPossibility(EmptyCellData &) const;
     };
 }
 
