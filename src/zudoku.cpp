@@ -150,7 +150,7 @@ SudokuSolver::NextCorrectPossibility SudokuSolver::findNextCorrectPossibility(
 ) const {
     NextCorrectPossibility possibility = {false};
 
-    while (possibility.found || !cell.possibilities.untried.empty()) {
+    while (!possibility.found && !cell.possibilities.untried.empty()) {
         CellValue value = cell.possibilities.untried.move_top();
 
         if (!this->doesValueExistInAnySharedBlocks(cell.index, value)) {
