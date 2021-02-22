@@ -143,8 +143,13 @@ namespace Zudoku
         constexpr static CellLinearIndex getColumnIndex(const CellIndex &);
         constexpr static CellLinearIndex getSquareIndex(const CellIndex &);
 
-        constexpr static bool &getIsValueExist(
+        constexpr static bool getIsValueExist(
             const BlockSetData &,
+            const CellIndex &,
+            const CellValue &
+        );
+        constexpr static bool &getIsValueExist(
+            BlockSetData &,
             const CellIndex &,
             const CellValue &
         );

@@ -72,6 +72,37 @@ void SudokuSolver::validateCellIndex(const CellIndex &index)
     }
 }
 
+constexpr SudokuSolver::CellLinearIndex SudokuSolver::getRowIndex(const CellIndex &i)
+{
+    return i.first;
+}
+
+constexpr SudokuSolver::CellLinearIndex SudokuSolver::getColumnIndex(const CellIndex &i)
+{
+    return i.second;
+}
+
+constexpr SudokuSolver::CellLinearIndex SudokuSolver::getSquareIndex(const CellIndex &i)
+{
+    return i.first / 3 * 3 + i.second / 3;
+}
+
+constexpr bool SudokuSolver::getIsValueExist(
+    const BlockSetData &blockSetData,
+    const CellIndex &index,
+    const CellValue &value
+) {
+    return blockSetData.valueExistence[blockSetData.indexGetter(index)][value];
+}
+
+constexpr bool &SudokuSolver::getIsValueExist(
+    BlockSetData &blockSetData,
+    const CellIndex &index,
+    const CellValue &value
+) {
+    return blockSetData.valueExistence[blockSetData.indexGetter(index)][value];
+}
+
 SudokuSolver::This SudokuSolver::makeEmptyCellsAndValueExistence()
 {
     for (size_t i = 0; i < 9; i++) {
