@@ -34,8 +34,8 @@ SudokuSolver::Table SudokuSolver::getTable() const
 
 SudokuSolver::This SudokuSolver::makeEmptyCellsAndBlocksData()
 {
-    for (size_t i = 0; i < 9; i++) {
-        for (size_t j = 0; j < 9; j++) {
+    for (CellLinearIndex i: CellLinearIndex::forEach()) {
+        for (CellLinearIndex j: CellLinearIndex::forEach()) {
             // Checking whether it is empty or not
             if (this->table[i][j] == 0) {
                 this->emptyCells.toBeFilled.push({

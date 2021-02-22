@@ -1,6 +1,7 @@
 #ifndef ZUDOKU_SUDOKU_SOLVER_HPP
 #define ZUDOKU_SUDOKU_SOLVER_HPP
 
+#include <algorithm>
 #include <array>
 #include <stdexcept>
 #include <string>
@@ -47,6 +48,11 @@ namespace Zudoku
             constexpr operator UInt() const noexcept
             {
                 return this->value;
+            }
+
+            constexpr static std::array<Self, 9> forEach() noexcept
+            {
+                return {0, 1, 2, 3, 4, 5, 6, 7, 8};
             }
 
         private:
