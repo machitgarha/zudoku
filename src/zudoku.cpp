@@ -63,7 +63,7 @@ void SudokuSolver::validateCellIndex(const CellIndex &index)
 {
     bool invalidFirstIndex;
 
-    if ((invalidFirstIndex = index.first > 8) || index.second > 8) {
+    if ((invalidFirstIndex = index.first > 9) || index.second > 9) {
         throw std::invalid_argument(flossy::format(
             "Expected table {} index to be in the range of 0 to 8, got {}",
             invalidFirstIndex ? "row" : "column",
@@ -104,9 +104,37 @@ SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
         this->validateCellValue(value);
     }
 
-    this->valueExistence.rows[this->getRowIndex(index)] = value;
-    this->valueExistence.columns[this->getColumnIndex(index)] = value;
-    this->valueExistence.squares[this->getSquareIndex(index)] = value;
+    struct BlockSetData
+    {
+        /**
+         * Used only for exception message generation.
+         */
+        const std::string name;
+
+        /**
+         * Used to find the index of the correspending block. For example, if we need to
+         * make cell (0, 0) visible to its row, we need to know its index (which is 0).
+         */
+        CellLinearIndex (&indexGetter)(const CellIndex &);
+    };
+
+    std::array<BlockSetData, 3> blockSetDataArray = {{
+        {"row", this->valueExistence.rows, Self::getRowIndex},
+        {"column", this->valueExistence.columns, Self::getColumnIndex},
+        {"square", this->valueExistence.squares, Self::getSquareIndex},
+    }};
+
+    for (const BlockSetData &b : blockSetDataArray) {
+        bool &valueExist = b.valueExistence[b.indexGetter(index)][value];
+
+        if (valueExist) {
+            throw std::invalid_argument(flossy::format(
+                "Two equal values found in {} {} of the table (value: {})",
+                b.name, b.indexGetter(index), value
+            ));
+        }
+        valueExist = true;
+    }
 
     return *this;
 }
