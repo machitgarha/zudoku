@@ -89,7 +89,7 @@ namespace Zudoku
         {
             using Possibilities = stack<CellValue>;
 
-            CellIndex index;
+            const CellIndex index;
 
             struct {
                 Possibilities tried, untried;
@@ -161,6 +161,12 @@ namespace Zudoku
 
         This makeEmptyCellsPossibilities();
         This tryEmptyCellsPossibilities();
+
+        constexpr inline This setCellValue(const CellIndex &index, const CellValue &value)
+        {
+            this->table[index.first][index.second] = value;
+            return *this;
+        }
 
     private:
         Table table;

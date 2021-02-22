@@ -173,18 +173,51 @@ SudokuSolver::This SudokuSolver::makeEmptyCellsPossibilities()
     stack<EmptyCellData> helper;
 
     while (!this->emptyCells.toBeFilled.empty()) {
-        EmptyCellData &&cellData = this->emptyCells.toBeFilled.move_top();
+        EmptyCellData &&cell = this->emptyCells.toBeFilled.move_top();
 
         for (size_t i = 1; i <= 9; i++) {
-            if (!this->hasValueInSharedBlocks(cellData.index, i)) {
-                cellData.possibilities.untried.push(i);
+            if (!this->hasValueInSharedBlocks(cell.index, i)) {
+                cell.possibilities.untried.push(i);
             }
         }
 
-        helper.push(cellData);
+        helper.push(cell);
     }
 
     this->emptyCells.toBeFilled.swap(helper);
+
+    return *this;
+}
+
+
+SudokuSolver::This SudokuSolver::tryEmptyCellsPossibilities()
+{
+    // While filling the table completely
+    while (!this->emptyCells.toBeFilled.empty()) {
+        EmptyCellData &&curEmptyCell = this->emptyCells.toBeFilled.move_top();
+
+        while (!curEmptyCell.possibilities.untried.empty()) {
+            CellValue value = curEmptyCell.possibilities.untried.top();
+
+            if (!this->hasValueInSharedBlocks(curEmptyCell.index, value)) {
+                this->setCellValue(curEmptyCell.index, value);
+                // Go to the next empty cell
+                break;
+            }
+
+            curEmptyCell.possibilities.untried.pop();
+            curEmptyCell.possibilities.tried.push(value);
+        }
+
+        if (curEmptyCell.possibilities.untried.empty()) {
+            curEmptyCell.possibilities.tried.swap(curEmptyCell.possibilities.untried);
+
+            this->emptyCells.toBeFilled.push(curEmptyCell);
+            this->emptyCells.toBeFilled.push(this->emptyCells.filled.move_top());
+        } else {
+            this->emptyCells.filled.push(curEmptyCell);
+        }
+    }
 
     return *this;
 }
