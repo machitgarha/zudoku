@@ -1,4 +1,4 @@
-#include "zudoku.hpp"
+#include "sudoku-solver.hpp"
 
 using namespace Zudoku;
 
@@ -59,7 +59,7 @@ SudokuSolver::This SudokuSolver::setValueExistInBlocks(
             throw std::invalid_argument(flossy::format(
                 "Two equal values encountered in {} {} of the table (value: {})",
                 b.name,
-                static_cast<unsigned int>(b.indexGetter(index)),
+                static_cast<unsigned int>(b.indexGetter(index)) + 1,
                 static_cast<unsigned int>(value)
             ));
         }
