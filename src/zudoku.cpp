@@ -142,7 +142,7 @@ SudokuSolver::This SudokuSolver::makeEmptyCellsPossibilities()
     stack<EmptyCellData> helper;
 
     while (!this->emptyCells.toBeFilled.empty()) {
-        EmptyCellData &&cell = this->emptyCells.toBeFilled.move_top();
+        EmptyCellData cell = this->emptyCells.toBeFilled.move_top();
 
         for (size_t i = 1; i <= 9; i++) {
             if (!this->hasValueInSharedBlocks(cell.index, i)) {
@@ -150,7 +150,7 @@ SudokuSolver::This SudokuSolver::makeEmptyCellsPossibilities()
             }
         }
 
-        helper.push(cell);
+        helper.push(std::move(cell));
     }
 
     this->emptyCells.toBeFilled.swap(helper);
@@ -163,10 +163,10 @@ SudokuSolver::This SudokuSolver::tryEmptyCellsPossibilities()
 {
     // While filling the table completely
     while (!this->emptyCells.toBeFilled.empty()) {
-        EmptyCellData &&curEmptyCell = this->emptyCells.toBeFilled.move_top();
+        EmptyCellData curEmptyCell = this->emptyCells.toBeFilled.move_top();
 
         while (!curEmptyCell.possibilities.untried.empty()) {
-            CellValue value = curEmptyCell.possibilities.untried.top();
+            CellValue value = curEmptyCell.possibilities.untried.move_top();
 
             if (!this->hasValueInSharedBlocks(curEmptyCell.index, value)) {
                 this->setCellValue(curEmptyCell.index, value);
@@ -174,7 +174,6 @@ SudokuSolver::This SudokuSolver::tryEmptyCellsPossibilities()
                 break;
             }
 
-            curEmptyCell.possibilities.untried.pop();
             curEmptyCell.possibilities.tried.push(value);
         }
 
