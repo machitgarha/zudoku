@@ -61,7 +61,9 @@ SudokuSolver::This SudokuSolver::setValueExistInBlocks(
         if (existCurState == existNewState) {
             throw std::invalid_argument(flossy::format(
                 "Two equal values encountered in {} {} of the table (value: {})",
-                b.name, b.indexGetter(index), value
+                b.name,
+                static_cast<unsigned int>(b.indexGetter(index)),
+                static_cast<unsigned int>(value)
             ));
         }
         existCurState = existNewState;
