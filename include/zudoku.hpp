@@ -139,20 +139,33 @@ namespace Zudoku
         static void validateCellValue(const CellValue &);
         static void validateCellIndex(const CellIndex &);
 
-        constexpr static CellLinearIndex getRowIndex(const CellIndex &);
-        constexpr static CellLinearIndex getColumnIndex(const CellIndex &);
-        constexpr static CellLinearIndex getSquareIndex(const CellIndex &);
+        constexpr static CellLinearIndex getRowIndex(const CellIndex &index)
+        {
+            return index.first;
+        }
+        constexpr static CellLinearIndex getColumnIndex(const CellIndex &index)
+        {
+            return index.second;
+        }
+        constexpr static CellLinearIndex getSquareIndex(const CellIndex &index)
+        {
+            return index.first / 3 * 3 + index.second / 3;
+        }
 
         constexpr static bool getIsValueExist(
-            const BlockSetData &,
-            const CellIndex &,
-            const CellValue &
-        );
+            const BlockSetData &blockSetData,
+            const CellIndex &index,
+            const CellValue &value
+        ) {
+            return blockSetData.valueExistence[blockSetData.indexGetter(index)][value];
+        }
         constexpr static bool &getIsValueExist(
-            BlockSetData &,
-            const CellIndex &,
-            const CellValue &
-        );
+            BlockSetData &blockSetData,
+            const CellIndex &index,
+            const CellValue &value
+        ) {
+            return blockSetData.valueExistence[blockSetData.indexGetter(index)][value];
+        }
 
         This makeEmptyCellsAndValueExistence();
 
