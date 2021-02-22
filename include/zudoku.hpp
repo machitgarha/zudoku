@@ -13,8 +13,8 @@ namespace Zudoku
     class SudokuSolver
     {
     private:
-        using This = SudokuSolver &;
         using Self = SudokuSolver;
+        using This = Self &;
 
     public:
         /**
@@ -24,6 +24,7 @@ namespace Zudoku
         {
         private:
             using Self = CellLinearIndex;
+            using This = Self &;
             using UInt = unsigned int;
 
         public:
@@ -34,6 +35,9 @@ namespace Zudoku
 
             CellLinearIndex(const Self &) = default;
             CellLinearIndex(Self &&) = default;
+
+            This operator=(const Self &) = default;
+            This operator=(Self &&) = default;
 
             constexpr Self operator+(const Self &other) const noexcept
             {
@@ -65,6 +69,7 @@ namespace Zudoku
         {
         private:
             using Self = CellValue;
+            using This = Self &;
             using UInt = unsigned int;
 
         public:
@@ -75,6 +80,9 @@ namespace Zudoku
 
             CellValue(const Self &) = default;
             CellValue(Self &&) = default;
+
+            This operator=(const Self &) = default;
+            This operator=(Self &&) = default;
 
             constexpr operator UInt() const noexcept
             {
