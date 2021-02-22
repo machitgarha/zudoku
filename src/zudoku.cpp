@@ -108,6 +108,7 @@ SudokuSolver::This SudokuSolver::tryEmptyCellsPossibilities()
         } else {
             this->clearCell(curEmptyCell.index);
 
+            // Reverting back the recent steps
             curEmptyCell.possibilities.untried.swap(curEmptyCell.possibilities.tried);
 
             this->emptyCells.toBeFilled.push(std::move(curEmptyCell));
