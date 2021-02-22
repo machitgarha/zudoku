@@ -15,30 +15,29 @@ namespace Zudoku
         using This = Self &;
 
     public:
-        App();
+        App() = default;
 
         This run();
 
     protected:
-        class ConsoleInput // static
+        class ConsoleIO // static
         {
         public:
-            ConsoleInput() = delete;
+            ConsoleIO() = delete;
+
+            static void showInitMessage();
 
             static bool askToSave();
             static bool askToRepeat();
-            static bool askToShowTable();
+            static bool askToDisplayTable();
 
             static std::string getInputCsvFilePath();
             static std::string getOutputCsvFilePath();
-        };
 
-        class ConsoleOutput // static
-        {
-        public:
-            ConsoleOutput() = delete;
+        protected:
+            static bool askYesOrNo(const std::string &, bool defaultAnswer = true);
 
-            static void showInitMessage();
+            static std::string getNonEmptyInput(const std::string &);
         };
 
         class Validation // static
