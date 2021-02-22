@@ -134,8 +134,10 @@ SudokuSolver::This SudokuSolver::clearCell(const CellIndex &index)
 {
     CellValue &curValue = this->table[index.first][index.second];
 
-    this->setValueExistInBlocks(index, curValue, false);
-    curValue = 0;
+    if (!this->isCellEmpty(index)) {
+        this->setValueExistInBlocks(index, curValue, false);
+        curValue = 0;
+    }
 
     return *this;
 }
