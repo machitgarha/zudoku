@@ -1,7 +1,6 @@
 #ifndef ZUDOKU_SUDOKU_SOLVER_HPP
 #define ZUDOKU_SUDOKU_SOLVER_HPP
 
-#include <algorithm>
 #include <array>
 #include <stdexcept>
 #include <string>
