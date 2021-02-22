@@ -19,9 +19,10 @@ SudokuSolver::SudokuSolver(Table &&table):
 
 SudokuSolver::This SudokuSolver::solve()
 {
-    this->makeEmptyCellsAndValueExistence();
-    this->makeEmptyCellsPossibilities();
-    this->tryEmptyCellsPossibilities();
+    (*this)
+        .makeEmptyCellsAndValueExistence()
+        .makeEmptyCellsPossibilities()
+        .tryEmptyCellsPossibilities();
 
     return *this;
 }
@@ -169,26 +170,33 @@ extern template SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks<true, 
 
 SudokuSolver::This SudokuSolver::makeEmptyCellsPossibilities()
 {
+    stack<EmptyCellData> helper;
+
     while (!this->emptyCells.toBeFilled.empty()) {
         EmptyCellData &&cellData = this->emptyCells.toBeFilled.move_top();
 
         for (size_t i = 1; i <= 9; i++) {
-            bool valueFound = false;
-            for (const BlockSetData &b : this->blockSetDataArray) {
-                if (this->getIsValueExist(b, cellData.index, cellData.index.first)) {
-                    valueFound = true;
-                    break;
-                }
-            }
-
-            if (!valueFound) {
+            if (!this->hasValueInSharedBlocks(cellData.index, i)) {
                 cellData.possibilities.untried.push(i);
             }
         }
-        this->emptyCells.filled.push(cellData);
+
+        helper.push(cellData);
     }
 
-    this->emptyCells.toBeFilled.swap(this->emptyCells.filled);
+    this->emptyCells.toBeFilled.swap(helper);
 
     return *this;
+}
+
+bool SudokuSolver::hasValueInSharedBlocks(
+    const CellIndex &index,
+    const CellValue &value
+) const {
+    for (const BlockSetData &b : this->blockSetDataArray) {
+        if (this->getIsValueExist(b, index, value)) {
+            return true;
+        }
+    }
+    return false;
 }

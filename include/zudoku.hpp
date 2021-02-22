@@ -164,6 +164,8 @@ namespace Zudoku
 
     private:
         Table table;
+
+        bool hasValueInSharedBlocks(const CellIndex &, const CellValue &) const;
     };
 }
 
