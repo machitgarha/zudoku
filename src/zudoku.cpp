@@ -1,8 +1,5 @@
 #include "zudoku.hpp"
 
-#include <stdexcept>
-#include <string>
-
 using namespace Zudoku;
 
 SudokuSolver::SudokuSolver(Table table):
