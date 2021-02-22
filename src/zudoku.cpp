@@ -135,3 +135,29 @@ extern template SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks<true, 
     const CellIndex &index,
     const CellValue &value
 );
+
+SudokuSolver::This SudokuSolver::makeEmptyCellsPossibilities()
+{
+    while (!this->emptyCells.toBeFilled.empty()) {
+        EmptyCellData &&cellData = this->emptyCells.toBeFilled.move_top();
+
+        for (size_t i = 1; i <= 9; i++) {
+            bool valueFound = false;
+            for (const BlockSetData &b : this->blockSetDataArray) {
+                if (this->getIsValueExist(b, cellData.index, cellData.index.first)) {
+                    valueFound = true;
+                    break;
+                }
+            }
+
+            if (!valueFound) {
+                cellData.possibilities.untried.push(i);
+            }
+        }
+        this->emptyCells.filled.push(cellData);
+    }
+
+    this->emptyCells.toBeFilled.swap(this->emptyCells.filled);
+
+    return *this;
+}
