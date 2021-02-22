@@ -2,6 +2,7 @@
 #define ZUDOKU_SUDOKU_SOLVER_HPP
 
 #include <array>
+#include <string>
 
 #include "stack.hpp"
 
@@ -96,28 +97,57 @@ namespace Zudoku
         };
 
         /**
-         * Tells whether a value exist in a block or not. By block, we mean either a row,
-         * a column, or a 3x3 square. Index 0 should be redundant.
+         * Tells whether a value exist in a block or not. Index 0 should be redundant.
          */
         using ValueExistence = std::array<bool, 10>;
+
+        /**
+         * Data of a set of same-type blocks. Block is either a row, a column or a 3x3
+         * square, that is a collection of exactly 9 unique cells, filled with 1 to 9.
+         *
+         * valueExistence takes care of existence of values in all blocks one by one. Every
+         * block is indexed, and a specific one could be catched using its index.
+         *
+         * The function (i.e. indexGetter) specified in order to find block index based on
+         * a cell index. For example, the cell (0, 0) is in row 0, column 0, and square 0.
+         * Note that, squares start from top-left and ends in bottom-right, iterating
+         * right-to-left and then up-to-down.
+         *
+         * The sole definition purpose of the name property is for exception message
+         * generation.
+         */
+        struct BlockSetData
+        {
+            const std::string name;
+            std::array<ValueExistence, 9> valueExistence;
+            CellLinearIndex (&indexGetter)(const CellIndex &);
+        };
 
         struct {
             stack<EmptyCellData> toBeFilled, filled;
         } emptyCells;
 
-        struct {
-            std::array<ValueExistence, 9>
-                rows = {0},
-                columns = {0},
-                squares = {0};
-        } valueExistence;
+        /**
+         * By using an array instead of a struct, iteration will be just easier.
+         */
+        std::array<BlockSetData, 3> blockSetDataArray = {{
+            {"row", {0}, Self::getRowIndex},
+            {"column", {0}, Self::getColumnIndex},
+            {"square", {0}, Self::getSquareIndex},
+        }};
 
         static void validateCellValue(const CellValue &);
         static void validateCellIndex(const CellIndex &);
 
-        constexpr static CellLinearIndex getRowIndex(const CellIndex &);
-        constexpr static CellLinearIndex getColumnIndex(const CellIndex &);
-        constexpr static CellLinearIndex getSquareIndex(const CellIndex &);
+        static CellLinearIndex getRowIndex(const CellIndex &);
+        static CellLinearIndex getColumnIndex(const CellIndex &);
+        static CellLinearIndex getSquareIndex(const CellIndex &);
+
+        constexpr static bool &getIsValueExist(
+            const BlockSetData &,
+            const CellIndex &,
+            const CellValue &
+        );
 
         This makeEmptyCellsAndValueExistence();
 

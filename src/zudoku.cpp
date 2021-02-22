@@ -104,30 +104,8 @@ SudokuSolver::This SudokuSolver::makeValueVisibleToBlocks(
         this->validateCellValue(value);
     }
 
-    struct BlockSetData
-    {
-        /**
-         * Used only for exception message generation.
-         */
-        const std::string name;
-
-        std::array<ValueExistence, 9> &valueExistence;
-
-        /**
-         * Used to find the index of the correspending block. For example, if we need to
-         * make cell (0, 0) visible to its row, we need to know its index (which is 0).
-         */
-        CellLinearIndex (&indexGetter)(const CellIndex &);
-    };
-
-    std::array<BlockSetData, 3> blockSetDataArray = {{
-        {"row", this->valueExistence.rows, Self::getRowIndex},
-        {"column", this->valueExistence.columns, Self::getColumnIndex},
-        {"square", this->valueExistence.squares, Self::getSquareIndex},
-    }};
-
-    for (const BlockSetData &b : blockSetDataArray) {
-        bool &valueExist = b.valueExistence[b.indexGetter(index)][value];
+    for (const BlockSetData &b : this->blockSetDataArray) {
+        bool &valueExist = this->getIsValueExist(b, index, value);
 
         if (valueExist) {
             throw std::invalid_argument(flossy::format(
