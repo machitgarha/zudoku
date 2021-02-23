@@ -27,6 +27,8 @@ namespace Zudoku
 
             static void showInitMessage();
 
+            static void displayTable(const Zudoku::SudokuSolver::Table &);
+
             static bool askToSave();
             static bool askToRepeat();
             static bool askToDisplayTable();
@@ -50,10 +52,10 @@ namespace Zudoku
 
         rapidcsv::Document prepareCsvData(const std::string &);
 
-        Zudoku::SudokuSolver::Table prepareTable(const rapidcsv::Document &);
-        Zudoku::SudokuSolver::Table solveTable(Zudoku::SudokuSolver::Table &&);
+        SudokuSolver::Table prepareTable(const rapidcsv::Document &);
+        SudokuSolver::Table solveTable(SudokuSolver::Table &&);
 
-        This saveToFile(const rapidcsv::Document &, const std::string &);
+        This saveToFile(rapidcsv::Document &, const std::string &);
     };
 }
 

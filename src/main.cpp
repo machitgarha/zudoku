@@ -1,21 +1,17 @@
-#include "zudoku.hpp"
+#include "app.hpp"
+
+#include "chop.hpp"
+
+using namespace MAChitgarha::Chop;
 
 int main()
 {
-    Zudoku::SudokuSolver::Table t = {{
-        {3, 0, 0, 7, 4, 0, 0, 9, 1},
-        {6, 0, 1, 0, 0, 0, 7, 0, 0},
-        {0, 9, 0, 8, 5, 0, 0, 4, 0},
-        {0, 0, 0, 0, 8, 0, 1, 0, 7},
-        {1, 0, 8, 2, 0, 7, 4, 0, 9},
-        {5, 0, 4, 0, 1, 0, 0, 0, 0},
-        {0, 3, 0, 0, 9, 8, 0, 7, 0},
-        {0, 0, 6, 0, 0, 0, 9, 0, 4},
-        {7, 1, 0, 0, 6, 4, 0, 0, 8},
-    }};
-    Zudoku::SudokuSolver s(t);
-
-    s.solve();
+    try {
+        Zudoku::App{}.run();
+    } catch (std::exception &e) {
+        printLine("Oops, something went wrong:");
+        printLine(e.what());
+    }
 
     return 0;
 }

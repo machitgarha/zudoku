@@ -1,0 +1,159 @@
+#include "app.hpp"
+
+#include "chop.hpp"
+
+using namespace Zudoku;
+using namespace MAChitgarha::Chop;
+
+App::This App::run()
+{
+    App::ConsoleIO::showInitMessage();
+
+    do {
+        rapidcsv::Document csvData = this->prepareCsvData(
+            App::ConsoleIO::getInputCsvFilePath()
+        );
+
+        SudokuSolver::Table solvedTable = this->solveTable(
+            this->prepareTable(csvData)
+        );
+
+        if (App::ConsoleIO::askToDisplayTable()) {
+            App::ConsoleIO::displayTable(solvedTable);
+        }
+
+        if (App::ConsoleIO::askToSave()) {
+            this->saveToFile(csvData, App::ConsoleIO::getOutputCsvFilePath());
+        }
+    } while (App::ConsoleIO::askToRepeat());
+
+    return *this;
+}
+
+void App::ConsoleIO::showInitMessage()
+{
+    printLine("Welcome to Zudoku (GPLv3-licensed), a fast Sudoku solver.");
+    printLine();
+}
+
+void App::ConsoleIO::displayTable(const SudokuSolver::Table &table)
+{
+    for (SudokuSolver::CellLinearIndex &i: SudokuSolver::CellLinearIndex::forEach()) {
+        for (SudokuSolver::CellLinearIndex &j: SudokuSolver::CellLinearIndex::forEach()) {
+            print(table[i][j], " ");
+        }
+        printLine();
+    }
+}
+
+bool App::ConsoleIO::askToSave()
+{
+    return App::ConsoleIO::askYesOrNo(
+        "Would you like to save the results?", true
+    );
+}
+
+bool App::ConsoleIO::askToRepeat()
+{
+    return App::ConsoleIO::askYesOrNo(
+        "Another Sudoku to solve?", false
+    );
+}
+
+bool App::ConsoleIO::askToDisplayTable()
+{
+    return App::ConsoleIO::askYesOrNo(
+        "Show solved Sudoku table here?", true
+    );
+}
+
+std::string App::ConsoleIO::getInputCsvFilePath()
+{
+    return App::ConsoleIO::getNonEmptyInput(
+        "Enter the path of the input CSV file:"
+    );
+}
+
+std::string App::ConsoleIO::getOutputCsvFilePath()
+{
+    return App::ConsoleIO::getNonEmptyInput(
+        "Enter the path of the output CSV file:"
+    );
+}
+
+bool App::ConsoleIO::askYesOrNo(const std::string &question, bool defaultAnswer)
+{
+    // Ask until a good input is given
+    do {
+        print(question, " [", defaultAnswer == true ? "Y/n" : "y/N", "] ");
+
+        std::string answer;
+        std::getline(std::cin, answer);
+
+        if (answer.empty()) {
+            return defaultAnswer;
+        }
+        if (std::tolower(answer[0]) == 'y') {
+            return true;
+        }
+        if (std::tolower(answer[0]) == 'n') {
+            return false;
+        }
+    } while (true);
+}
+
+std::string App::ConsoleIO::getNonEmptyInput(const std::string &message)
+{
+    std::string input;
+
+    do {
+        print(message, " ");
+        std::getline(std::cin, input);
+    } while (input.empty());
+
+    return input;
+}
+
+void App::Validation::validateCsvData(const rapidcsv::Document &csvData)
+{
+    if (csvData.GetRowCount() != 9 || csvData.GetColumnCount() != 9) {
+        throw std::out_of_range(flossy::format(
+            "Expected CSV data to be exactly 9x9, but is {}x{}",
+            csvData.GetRowCount(),
+            csvData.GetColumnCount()
+        ));
+    }
+}
+
+rapidcsv::Document App::prepareCsvData(const std::string &inputCsvFilePath)
+{
+    return rapidcsv::Document{
+        inputCsvFilePath, rapidcsv::LabelParams{-1, -1}
+    };
+}
+
+SudokuSolver::Table App::prepareTable(const rapidcsv::Document &csvData)
+{
+    SudokuSolver::Table table;
+
+    for (size_t i = 0; i < csvData.GetRowCount(); i++) {
+        for (size_t j = 0; j < csvData.GetColumnCount(); j++) {
+            table[i][j] = csvData.GetCell<unsigned int>(j, i);
+        }
+    }
+
+    return table;
+}
+
+SudokuSolver::Table App::solveTable(SudokuSolver::Table &&table)
+{
+    return SudokuSolver{table}.solve().getTable();
+}
+
+App::This App::saveToFile(
+    rapidcsv::Document &csvData,
+    const std::string &outputCsvFilePath
+) {
+    csvData.Save(outputCsvFilePath);
+    return *this;
+}
