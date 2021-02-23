@@ -14,9 +14,11 @@ App::This App::run()
             App::ConsoleIO::getInputCsvFilePath()
         );
 
+        print("Solving Sudoku table... ");
         SudokuSolver::Table solvedTable = this->solveTable(
             this->prepareTable(csvData)
         );
+        printLine("Done!");
 
         if (App::ConsoleIO::askToDisplayTable()) {
             App::ConsoleIO::displayTable(solvedTable);
@@ -44,6 +46,7 @@ void App::ConsoleIO::displayTable(const SudokuSolver::Table &table)
         }
         printLine();
     }
+    printLine();
 }
 
 bool App::ConsoleIO::askToSave()
@@ -70,7 +73,7 @@ bool App::ConsoleIO::askToDisplayTable()
 std::string App::ConsoleIO::getInputCsvFilePath()
 {
     return App::ConsoleIO::getNonEmptyInput(
-        "Enter the path of the input CSV file:"
+        "Please enter the path of the input CSV file (including Sudoku table data):"
     );
 }
 
@@ -89,6 +92,8 @@ bool App::ConsoleIO::askYesOrNo(const std::string &question, bool defaultAnswer)
 
         std::string answer;
         std::getline(std::cin, answer);
+
+        printLine();
 
         if (answer.empty()) {
             return defaultAnswer;
@@ -109,6 +114,7 @@ std::string App::ConsoleIO::getNonEmptyInput(const std::string &message)
     do {
         print(message, " ");
         std::getline(std::cin, input);
+        printLine();
     } while (input.empty());
 
     return input;
