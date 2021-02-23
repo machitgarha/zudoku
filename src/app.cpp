@@ -9,10 +9,22 @@ App::This App::run()
 {
     App::ConsoleIO::showInitMessage();
 
+    rapidcsv::Document csvData;
+
     do {
-        rapidcsv::Document csvData = this->prepareCsvData(
-            App::ConsoleIO::getInputCsvFilePath()
-        );
+        do {
+            try {
+                csvData = this->prepareCsvData(
+                    App::ConsoleIO::getInputCsvFilePath()
+                );
+                break;
+            } catch (std::ios_base::failure &e) {
+                printLine("Error: Could not read the file. Please try again.");
+                printLine("Check if you entered the path correctly, the file exists and "
+                    "is also accessible (i.e. readable).");
+                printLine();
+            }
+        } while (true);
 
         print("Solving Sudoku table... ");
         SudokuSolver::Table solvedTable = this->solveTable(
