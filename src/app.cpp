@@ -133,9 +133,13 @@ void App::Validation::validateCsvData(const rapidcsv::Document &csvData)
 
 rapidcsv::Document App::prepareCsvData(const std::string &inputCsvFilePath)
 {
-    return rapidcsv::Document{
+    rapidcsv::Document csvData{
         inputCsvFilePath, rapidcsv::LabelParams{-1, -1}
     };
+
+    App::Validation::validateCsvData(csvData);
+
+    return csvData;
 }
 
 SudokuSolver::Table App::prepareTable(const rapidcsv::Document &csvData)
