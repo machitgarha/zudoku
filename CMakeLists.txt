@@ -7,7 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED true)
 
 add_executable(${PROJECT_NAME}
     src/main.cpp
-    src/zudoku.cpp
+    src/app.cpp
+    src/sudoku-solver.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -16,4 +17,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     # Static libraries
     lib/flossy
     lib/rapidcsv/src
+    lib/chop/include
 )
