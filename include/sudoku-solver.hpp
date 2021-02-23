@@ -270,6 +270,8 @@ namespace Zudoku
         This setValueExistInBlocks(const CellIndex &, const CellValue &, bool = true);
 
         This makeEmptyCellsPossibilities();
+        This sortEmptyCellsByPossibilitiesCount();
+
         This tryEmptyCellsPossibilities();
 
         This replaceCell(const CellIndex &, const CellValue &);

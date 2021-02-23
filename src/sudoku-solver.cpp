@@ -17,6 +17,7 @@ SudokuSolver::This SudokuSolver::solve()
     (*this)
         .makeEmptyCellsAndBlocksData()
         .makeEmptyCellsPossibilities()
+        .sortEmptyCellsByPossibilitiesCount()
         .tryEmptyCellsPossibilities();
 
     return *this;
@@ -86,6 +87,27 @@ SudokuSolver::This SudokuSolver::makeEmptyCellsPossibilities()
     }
 
     this->emptyCells.toBeFilled.swap(helper);
+
+    return *this;
+}
+
+SudokuSolver::This SudokuSolver::sortEmptyCellsByPossibilitiesCount()
+{
+    std::array<stack<EmptyCellData>, 10> tmpStacks;
+
+    while (!this->emptyCells.toBeFilled.empty()) {
+        EmptyCellData cell = this->emptyCells.toBeFilled.move_top();
+        tmpStacks[cell.possibilities.untried.size()].push(std::move(cell));
+    }
+
+    // Possililities of an empty cell must not be empty at the very beginning
+    for (size_t i = 9; i > 0; i--) {
+        while (!tmpStacks[i].empty()) {
+            this->emptyCells.toBeFilled.push(
+                std::move(tmpStacks[i].move_top())
+            );
+        }
+    }
 
     return *this;
 }
