@@ -22,11 +22,11 @@ App::This App::run()
                 printLine("Error: Could not read the file. Please try again.");
                 printLine("Check if you entered the path correctly, the file exists and "
                     "is also accessible (i.e. readable).");
-                printLine();
             }
         } while (true);
 
-        print("Solving Sudoku table... ");
+        printLine();
+        printLine("Solving Sudoku table... ");
         SudokuSolver::Table solvedTable = this->solveTable(
             this->prepareTable(csvData)
         );
@@ -42,12 +42,12 @@ App::This App::run()
                     this->saveSolvedTableToCsvFile(
                         csvData, App::ConsoleIO::getOutputCsvFilePath(), solvedTable
                     );
+                    printLine("File saved successfully.");
                 }
                 break;
             } catch (std::ios_base::failure &) {
                 printLine("Error: Could not save to the specified file.");
                 printLine("Perhaps it is a permission error?");
-                printLine();
             }
         } while (true);
     } while (App::ConsoleIO::askToRepeat());
@@ -58,18 +58,17 @@ App::This App::run()
 void App::ConsoleIO::showInitMessage()
 {
     printLine("Welcome to Zudoku (GPLv3-licensed), a fast Sudoku solver.");
-    printLine();
 }
 
 void App::ConsoleIO::displayTable(const SudokuSolver::Table &table)
 {
+    printLine();
     for (SudokuSolver::CellLinearIndex &i: SudokuSolver::CellLinearIndex::forEach()) {
         for (SudokuSolver::CellLinearIndex &j: SudokuSolver::CellLinearIndex::forEach()) {
             print(table[i][j], " ");
         }
         printLine();
     }
-    printLine();
 }
 
 bool App::ConsoleIO::askToSave()
@@ -109,6 +108,8 @@ std::string App::ConsoleIO::getOutputCsvFilePath()
 
 bool App::ConsoleIO::askYesOrNo(const std::string &question, bool defaultAnswer)
 {
+    printLine();
+
     // Ask until a good input is given
     do {
         print(question, " [", defaultAnswer == true ? "Y/n" : "y/N", "] ");
@@ -116,7 +117,6 @@ bool App::ConsoleIO::askYesOrNo(const std::string &question, bool defaultAnswer)
         std::string answer;
         std::getline(std::cin, answer);
 
-        printLine();
 
         if (answer.empty()) {
             return defaultAnswer;
@@ -127,7 +127,6 @@ bool App::ConsoleIO::askYesOrNo(const std::string &question, bool defaultAnswer)
         if (std::tolower(answer[0]) == 'n') {
             return false;
         }
-        std::cout << '"' << answer[0] << '"' << std::endl;
     } while (true);
 }
 
@@ -135,10 +134,10 @@ std::string App::ConsoleIO::getNonEmptyInput(const std::string &message)
 {
     std::string input;
 
+    printLine();
     do {
         print(message, " ");
         std::getline(std::cin, input);
-        printLine();
     } while (input.empty());
 
     return input;
