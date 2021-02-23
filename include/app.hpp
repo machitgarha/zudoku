@@ -55,7 +55,11 @@ namespace Zudoku
         SudokuSolver::Table prepareTable(const rapidcsv::Document &);
         SudokuSolver::Table solveTable(SudokuSolver::Table &&);
 
-        This saveToFile(rapidcsv::Document &, const std::string &);
+        This saveSolvedTableToFile(
+            rapidcsv::Document &,
+            const std::string &,
+            const SudokuSolver::Table &
+        );
     };
 }
 

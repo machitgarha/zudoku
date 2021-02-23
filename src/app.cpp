@@ -25,7 +25,9 @@ App::This App::run()
         }
 
         if (App::ConsoleIO::askToSave()) {
-            this->saveToFile(csvData, App::ConsoleIO::getOutputCsvFilePath());
+            this->saveSolvedTableToFile(
+                csvData, App::ConsoleIO::getOutputCsvFilePath(), solvedTable
+            );
         }
     } while (App::ConsoleIO::askToRepeat());
 
@@ -148,7 +150,7 @@ SudokuSolver::Table App::prepareTable(const rapidcsv::Document &csvData)
 
     for (size_t i = 0; i < csvData.GetRowCount(); i++) {
         for (size_t j = 0; j < csvData.GetColumnCount(); j++) {
-            table[i][j] = csvData.GetCell<unsigned int>(j, i);
+            table[j][i] = csvData.GetCell<unsigned int>(i, j);
         }
     }
 
@@ -160,10 +162,17 @@ SudokuSolver::Table App::solveTable(SudokuSolver::Table &&table)
     return SudokuSolver{table}.solve().getTable();
 }
 
-App::This App::saveToFile(
+App::This App::saveSolvedTableToFile(
     rapidcsv::Document &csvData,
-    const std::string &outputCsvFilePath
+    const std::string &outputCsvFilePath,
+    const SudokuSolver::Table &solvedTable
 ) {
+    for (SudokuSolver::CellLinearIndex &i: SudokuSolver::CellLinearIndex::forEach()) {
+        for (SudokuSolver::CellLinearIndex &j: SudokuSolver::CellLinearIndex::forEach()) {
+            csvData.SetCell<unsigned int>(i, j, solvedTable[j][i]);
+        }
+    }
+
     csvData.Save(outputCsvFilePath);
     return *this;
 }
