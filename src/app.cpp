@@ -18,7 +18,7 @@ App::This App::run()
                     App::ConsoleIO::getInputCsvFilePath()
                 );
                 break;
-            } catch (std::ios_base::failure &e) {
+            } catch (std::ios_base::failure &) {
                 printLine("Error: Could not read the file. Please try again.");
                 printLine("Check if you entered the path correctly, the file exists and "
                     "is also accessible (i.e. readable).");
@@ -36,11 +36,20 @@ App::This App::run()
             App::ConsoleIO::displayTable(solvedTable);
         }
 
-        if (App::ConsoleIO::askToSave()) {
-            this->saveSolvedTableToFile(
-                csvData, App::ConsoleIO::getOutputCsvFilePath(), solvedTable
-            );
-        }
+        do {
+            if (App::ConsoleIO::askToSave()) {
+                try {
+                    this->saveSolvedTableToFile(
+                        csvData, App::ConsoleIO::getOutputCsvFilePath(), solvedTable
+                    );
+                    break;
+                } catch (std::ios_base::failure &) {
+                    printLine("Error: Could not save to the specified file.");
+                    printLine("Perhaps it is a permission error?");
+                    printLine();
+                }
+            }
+        } while (true);
     } while (App::ConsoleIO::askToRepeat());
 
     return *this;
