@@ -37,17 +37,17 @@ App::This App::run()
         }
 
         do {
-            if (App::ConsoleIO::askToSave()) {
-                try {
+            try {
+                if (App::ConsoleIO::askToSave()) {
                     this->saveSolvedTableToCsvFile(
                         csvData, App::ConsoleIO::getOutputCsvFilePath(), solvedTable
                     );
-                    break;
-                } catch (std::ios_base::failure &) {
-                    printLine("Error: Could not save to the specified file.");
-                    printLine("Perhaps it is a permission error?");
-                    printLine();
                 }
+                break;
+            } catch (std::ios_base::failure &) {
+                printLine("Error: Could not save to the specified file.");
+                printLine("Perhaps it is a permission error?");
+                printLine();
             }
         } while (true);
     } while (App::ConsoleIO::askToRepeat());
@@ -127,6 +127,7 @@ bool App::ConsoleIO::askYesOrNo(const std::string &question, bool defaultAnswer)
         if (std::tolower(answer[0]) == 'n') {
             return false;
         }
+        std::cout << '"' << answer[0] << '"' << std::endl;
     } while (true);
 }
 
