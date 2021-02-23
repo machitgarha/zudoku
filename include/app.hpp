@@ -50,12 +50,12 @@ namespace Zudoku
             static void validateCsvData(const rapidcsv::Document &);
         };
 
-        rapidcsv::Document prepareCsvData(const std::string &);
+        rapidcsv::Document readCsvFileData(const std::string &);
 
         SudokuSolver::Table prepareTable(const rapidcsv::Document &);
         SudokuSolver::Table solveTable(SudokuSolver::Table &&);
 
-        This saveSolvedTableToFile(
+        This saveSolvedTableToCsvFile(
             rapidcsv::Document &,
             const std::string &,
             const SudokuSolver::Table &

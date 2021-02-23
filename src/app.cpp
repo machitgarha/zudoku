@@ -14,7 +14,7 @@ App::This App::run()
     do {
         do {
             try {
-                csvData = this->prepareCsvData(
+                csvData = this->readCsvFileData(
                     App::ConsoleIO::getInputCsvFilePath()
                 );
                 break;
@@ -39,7 +39,7 @@ App::This App::run()
         do {
             if (App::ConsoleIO::askToSave()) {
                 try {
-                    this->saveSolvedTableToFile(
+                    this->saveSolvedTableToCsvFile(
                         csvData, App::ConsoleIO::getOutputCsvFilePath(), solvedTable
                     );
                     break;
@@ -154,7 +154,7 @@ void App::Validation::validateCsvData(const rapidcsv::Document &csvData)
     }
 }
 
-rapidcsv::Document App::prepareCsvData(const std::string &inputCsvFilePath)
+rapidcsv::Document App::readCsvFileData(const std::string &inputCsvFilePath)
 {
     rapidcsv::Document csvData{
         inputCsvFilePath, rapidcsv::LabelParams{-1, -1}
@@ -183,7 +183,7 @@ SudokuSolver::Table App::solveTable(SudokuSolver::Table &&table)
     return SudokuSolver{table}.solve().getTable();
 }
 
-App::This App::saveSolvedTableToFile(
+App::This App::saveSolvedTableToCsvFile(
     rapidcsv::Document &csvData,
     const std::string &outputCsvFilePath,
     const SudokuSolver::Table &solvedTable
