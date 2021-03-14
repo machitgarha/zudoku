@@ -1,0 +1,9 @@
+[submodule "lib/flossy"]
+	path = lib/flossy
+	url = https://github.com/rnlf/flossy
+[submodule "lib/rapidcsv"]
+	path = lib/rapidcsv
+	url = https://github.com/d99kris/rapidcsv
+[submodule "lib/chop"]
+	path = lib/chop
+	url = https://github.com/machitgarha/chop
