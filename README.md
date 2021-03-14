@@ -1,6 +1,6 @@
 # Zudoku
 
-The name remind you of Sudoku, right? Sure. Zudoku is a blazingly-fast interactive command-line application to resolve Sudoku tables. It uses CSV files for input/output, which makes it easy to use.
+The name remind you of Sudoku, right? Sure. Zudoku is a blazingly-fast interactive command-line application to solve Sudoku tables. It uses CSV files for input/output (thanks to [rapidcsv](https://github.com/d99kris/rapidcsv)), which makes it easy to use.
 
 ## Building and Running
 
